@@ -9,8 +9,8 @@ app.use(express.static('public'));
 
 app.get('/api/notes', (req,res) => { 
     const query = req.query.searchTerm;
-    let result = data.filter(item => item.title.includes(query));
-    query === undefined ? res.json(data) : res.json(result);
+    if(query === undefined) return res.json(data);
+    res.json(data.filter(item => item.title.includes(query))); 
 });
 
 app.get('/api/notes/:id', (req, res) => {
