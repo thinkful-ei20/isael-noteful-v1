@@ -2,11 +2,13 @@
 const express = require('express');
 const data = require('./db/notes');
 const { PORT } = require('./config');
+const { logger } = require('./middleware/logger.js');
 const app = express();
 console.log('Hello Noteful!');
 
 // INSERT EXPRESS APP CODE HERE...
 app.use(express.static('public'));
+app.use(logger);
 
 app.get('/api/notes', (req,res) => { 
     const query = req.query.searchTerm;
