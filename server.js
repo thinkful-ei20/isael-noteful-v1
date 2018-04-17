@@ -1,8 +1,10 @@
 'use strict';
 const express = require('express');
 const data = require('./db/notes');
+const simDB = require('./db/simDB');
 const { PORT } = require('./config');
 const { logger } = require('./middleware/logger');
+const notes = simDB.initialize(data);
 const app = express();
 console.log('Hello Noteful!');
 
@@ -10,14 +12,29 @@ console.log('Hello Noteful!');
 app.use(express.static('public'));
 app.use(logger);
 
-app.get('/api/notes', (req,res) => { 
-    const query = req.query.searchTerm;
-    if(query === undefined) return res.json(data);
-    res.json(data.filter(item => item.title.includes(query))); 
+app.get('/api/notes', (req,res, next) => { 
+    const { searchTerm } = req.query;
+
+    notes.filter(searchTerm, (err, list) => {
+        console.log(list);
+        if(list.length === 0  || err){
+            return next(err);
+        }
+        res.json(list);
+    });
 });
 
-app.get('/api/notes/:id', (req, res) => {
-    res.json(data.find(item => item.id === Number(req.params.id)));
+app.get('/api/notes/:id', (req, res, next) => {
+    const { id } = req.params;
+    
+    notes.find(id, (err, item) =>{
+        if(item === undefined || err){
+            return next(err);
+        }
+        res.json(item);
+    });
+
+    //res.json(data.find(item => item.id === Number(req.params.id)));
 });
 
 // app.get('/boom', (req, res, next) => {
