@@ -10,6 +10,7 @@ console.log('Hello Noteful!');
 
 // INSERT EXPRESS APP CODE HERE...
 app.use(express.static('public'));
+app.use(express.json());
 app.use(logger);
 
 app.get('/api/notes', (req,res, next) => { 
@@ -36,6 +37,33 @@ app.get('/api/notes/:id', (req, res, next) => {
 
     //res.json(data.find(item => item.id === Number(req.params.id)));
 });
+
+app.put('/api/notes/:id', (req, res, next) => {
+    const id = req.params.id;
+    console.log(id);
+    //console.log(req.body);
+    /***** Never trust users - validate input *****/
+    const updateObj = {};
+    const updateFields = ['title', 'content'];
+  
+    updateFields.forEach(field => {
+      if (field in req.body) {
+        updateObj[field] = req.body[field];
+      }
+    });
+    
+    console.log(updateObj);
+    notes.update(id, updateObj, (err, item) => {
+      if (Object.keys(updateObj).length === 0 || err) {
+        return next(err);
+      }
+      if (item) {
+        res.json(item);
+      } else {
+        next();
+      }
+    });
+  });
 
 // app.get('/boom', (req, res, next) => {
 //     throw new Error('!boom');
