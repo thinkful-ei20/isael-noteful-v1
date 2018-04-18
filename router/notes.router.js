@@ -91,7 +91,7 @@ router.delete('/notes/:id', (req, res, next) => {
     
     //console.log(err === null);
     if(err === null){
-      res.status(204).end();
+      res.sendStatus(204).end();
     }
   });
 });
