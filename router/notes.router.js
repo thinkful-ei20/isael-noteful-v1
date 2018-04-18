@@ -88,14 +88,12 @@ router.delete('/notes/:id', (req, res, next) => {
 
   notes.delete(id, err => {
     if(err) return next(err);
-    //throw new Error('!boom');
+    
     //console.log(err === null);
     if(err === null){
       res.status(204).end();
     }
   });
-  
-
 });
 
 module.exports = router;
