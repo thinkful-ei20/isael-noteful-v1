@@ -82,4 +82,20 @@ router.post('/notes', (req, res, next) => {
 
 });
 
+router.delete('/notes/:id', (req, res, next) => {
+  let {id} = req.params;
+  //console.log(notes.data[])
+
+  notes.delete(id, err => {
+    if(err) return next(err);
+    //throw new Error('!boom');
+    //console.log(err === null);
+    if(err === null){
+      res.status(204).end();
+    }
+  });
+  
+
+});
+
 module.exports = router;
