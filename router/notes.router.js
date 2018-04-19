@@ -18,14 +18,6 @@ router.get('/notes', (req,res, next) => {
     .catch(err => {
       next(err);
     });
-
-  // notes.filter(searchTerm, (err, list) => {
-  //   //console.log(list);
-  //   if(list.length === 0  || err){
-  //     return next(err);
-  //   }
-  //   res.json(list);
-  // });
 });
 
 router.get('/notes/:id', (req, res, next) => {
@@ -60,29 +52,16 @@ router.put('/notes/:id', (req, res, next) => {
     }
   });
 
-  //console.log(updateObj);
-  // notes.update(id, updateObj)
-  //   .then(item => {
-  //     if(item){
-  //       res.json(item);
-  //     }else{
-  //       next();
-  //     }
-  //   })
-  //   .catch(err => {
-
-  //   });
-
-  notes.update(id, updateObj, (err, item) => {
-    if (Object.keys(updateObj).length === 0 || err) {
-      return next(err);
-    }
-    if (item) {
-      res.json(item);
-    } else {
+  console.log(updateObj);
+  notes.update(id, updateObj)
+    .then(item => {
+      //console.log(item);
+      if(item) return res.json(item);
       next();
-    }
-  });
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 router.post('/notes', (req, res, next) => {
@@ -95,16 +74,14 @@ router.post('/notes', (req, res, next) => {
     return next(err);
   }
 
-  notes.create(newItem, (err, item) => {
-    if(err){
-      return next(err);
-    }
-    if(item){
-      res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
-    }else{
+  notes.create(newItem)
+    .then(item => {
+      if(item) return res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
       next();
-    }
-  });
+    })
+    .catch(error => {
+      next(error);
+    });
 
 });
 
@@ -112,14 +89,14 @@ router.delete('/notes/:id', (req, res, next) => {
   let {id} = req.params;
   //console.log(notes.data[])
 
-  notes.delete(id, err => {
-    if(err) return next(err);
-    
-    //console.log(err === null);
-    if(err === null){
+  notes.delete(id)
+    .then(() => {
       res.sendStatus(204).end();
-    }
-  });
+    })
+    .catch(error => {
+      next(error);
+    });
+
 });
 
 module.exports = router;
