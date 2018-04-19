@@ -10,24 +10,38 @@ const router = express.Router();
 router.get('/notes', (req,res, next) => { 
   const { searchTerm } = req.query;
 
-  notes.filter(searchTerm, (err, list) => {
-    //console.log(list);
-    if(list.length === 0  || err){
-      return next(err);
-    }
-    res.json(list);
-  });
+  notes.filter(searchTerm)
+    .then(list => {
+      if(list.length !== 0) res.json(list); 
+      next();
+    })
+    .catch(err => {
+      next(err);
+    });
+
+  // notes.filter(searchTerm, (err, list) => {
+  //   //console.log(list);
+  //   if(list.length === 0  || err){
+  //     return next(err);
+  //   }
+  //   res.json(list);
+  // });
 });
 
 router.get('/notes/:id', (req, res, next) => {
   const { id } = req.params;
     
-  notes.find(id, (err, item) =>{
-    if(item === undefined || err){
-      return next(err);
-    }
-    res.json(item);
-  });
+  notes.find(id)
+    .then(response => {
+      if(response){
+        res.json(response);
+      }else{
+        next();
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
 
   //res.json(data.find(item => item.id === Number(req.params.id)));
 });
@@ -47,6 +61,18 @@ router.put('/notes/:id', (req, res, next) => {
   });
 
   //console.log(updateObj);
+  // notes.update(id, updateObj)
+  //   .then(item => {
+  //     if(item){
+  //       res.json(item);
+  //     }else{
+  //       next();
+  //     }
+  //   })
+  //   .catch(err => {
+
+  //   });
+
   notes.update(id, updateObj, (err, item) => {
     if (Object.keys(updateObj).length === 0 || err) {
       return next(err);
