@@ -132,7 +132,7 @@ describe('Post new note', function(){
   });
 });
 
-describe('should be able to update note', function(){
+describe('Put should be able to update note', function(){
   it('should be able to update obj if it exists', function(){
     return chai.request(app)
       .put('/api/notes/1005')
@@ -158,6 +158,16 @@ describe('should be able to update note', function(){
       .send({'title': '', 'content': 'test'})
       .then(res => {
         expect(res.body.message).to.equal('Missing `title` in request body');
+      });
+  });
+});
+
+describe('Delete be able to delete item with id', function(){
+  it('should be able to delete with id', function(){
+    return chai.request(app)
+      .delete('/api/notes/1005')
+      .then(res => {
+        expect(res.status).to.equal(204);
       });
   });
 });
