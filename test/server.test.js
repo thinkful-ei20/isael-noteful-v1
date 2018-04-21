@@ -131,3 +131,33 @@ describe('Post new note', function(){
       });
   });
 });
+
+describe('should be able to update note', function(){
+  it('should be able to update obj if it exists', function(){
+    return chai.request(app)
+      .put('/api/notes/1005')
+      .send({'title': 'test', 'content': 'test'})
+      .then(res => {
+        expect(res.body.title).to.equal('test');
+        expect(res.body.content).to.equal('test');
+      });
+  });
+
+  it('should return 404 and error message if it doesnt exist', function(){
+    return chai.request(app)
+      .put('/api/notes/423891421890')
+      .send({'title': 'test', 'content': 'test'})
+      .then(res => {
+        expect(res.status).to.equal(404);
+      });
+  });
+
+  it.only('should return an error message if title is missing', function(){
+    return chai.request(app)
+      .put('/api/notes/1005')
+      .send({'title': '', 'content': 'test'})
+      .then(res => {
+        expect(res.body.message).to.equal('Missing `title` in request body');
+      });
+  });
+});

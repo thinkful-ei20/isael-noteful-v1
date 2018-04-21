@@ -46,6 +46,7 @@ router.put('/notes/:id', (req, res, next) => {
   //console.log(id);
   //console.log(req.body);
   /***** Never trust users - validate input *****/
+  
   const updateObj = {};
   const updateFields = ['title', 'content'];
   
@@ -54,6 +55,12 @@ router.put('/notes/:id', (req, res, next) => {
       updateObj[field] = req.body[field];
     }
   });
+
+  if(!updateObj.title){
+    const err = new Error('Missing `title` in request body');
+    err.status = 400;
+    return next(err);
+  }
 
   console.log(updateObj);
   notes.update(id, updateObj)
