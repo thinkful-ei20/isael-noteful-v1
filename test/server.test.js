@@ -50,9 +50,8 @@ describe('get the notes from api/notes endpoint', function(){
     return chai.request(app)
       .get('/api/notes')
       .then( res => {
-        expect(res).to.be.json;
         expect(res.body).to.be.a('array');
-        expect(res.body.length).to.be.at.least(1);
+        expect(res.body.length).to.be.at.least(10);
 
         const expectKeys = ['id', 'title', 'content'];
         res.body.forEach(function(item){
@@ -65,7 +64,6 @@ describe('get the notes from api/notes endpoint', function(){
     return chai.request(app)
       .get('/api/notes?searchTerm=5 life lessons learned from cats')
       .then( res => {
-        expect(res).to.be.json;
         expect(res.body).to.be.a('array');
         expect(res.body.length).to.be.at.least(1);
         
@@ -74,6 +72,15 @@ describe('get the notes from api/notes endpoint', function(){
           expect(item.title).to.match(/(?:5 life lessons learned from cats)/);
           expect(item).to.include.keys(expectKeys);
         });
+      });
+  });
+
+  it('should return empty array if cant find search term', function(){
+    return chai.request(app)
+      .get('/api/notes?searchTerm=dsakjdjskadajskldjsakldas')
+      .then(res => {
+        expect(res.body).to.be.a('array');
+        expect(res.body.length).to.equal(0);
       });
   });
 
