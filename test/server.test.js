@@ -152,7 +152,7 @@ describe('should be able to update note', function(){
       });
   });
 
-  it.only('should return an error message if title is missing', function(){
+  it('should return an error message if title is missing', function(){
     return chai.request(app)
       .put('/api/notes/1005')
       .send({'title': '', 'content': 'test'})
