@@ -110,3 +110,24 @@ describe('get notes with id', function(){
   });
 
 });
+
+describe('Post new note', function(){
+  it('should provide location header if successful', function(){
+    return chai.request(app)
+      .post('/api/notes')
+      .send({'title': 'test','content': 'test'})
+      .then(res => {
+        expect(res.status).to.equal(201);
+        expect(res.header.location).to.exist;
+      });
+  });
+
+  it('should provide object message with Missing title in request body', function(){
+    return chai.request(app)
+      .post('/api/notes')
+      .send({'title': '', 'content': 'test'})
+      .then(res => {
+        expect(res.body.message).to.equal('Missing `title` in request body');
+      });
+  });
+});
