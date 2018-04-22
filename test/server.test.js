@@ -3,7 +3,7 @@ const chai = require('chai');
 const app = require('../server');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
-
+//test on mac
 chai.use(chaiHttp);
 
 describe('Reality check', function () {
